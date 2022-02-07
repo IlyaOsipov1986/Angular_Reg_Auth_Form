@@ -1,0 +1,97 @@
+<div class="container">
+  <div class="badge bg-black fs-5 mt-2 fw-normal">
+    Total User Count:
+  </div>
+  <div class="badge bg-primary fs-5 m-2">
+    {{count}}
+  </div>
+  <div class="float-end m-2">
+    <a routerLink="/registration">
+      <button class="btn btn-success me-3">Create</button>
+    </a>
+    <div class="badge bg-primary fs-5 fw-normal">
+      Namaste {{user}}
+    </div>
+  </div>
+  <h4 class="mt-4">Filter By:</h4>
+  <form (ngSubmit)="search()">
+    <div class="row">
+      <div class="form-group col-md-3">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" [(ngModel)]="userName"
+               name="username">
+      </div>
+      <div class="form-group col-md-3 mb-3">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" [(ngModel)]="email"
+               name="email">
+      </div>
+      <div class="form-group col-md-3 mb-3">
+        <label for="createdBy">Created By</label>
+        <input type="text" class="form-control" id="createdBy" [(ngModel)]="createdBy"
+               name="createdBy">
+      </div>
+      <div class="form-group col-md-3 mb-3 mt-4">
+        <label class="m-lg-2">Status: </label>
+        <select [(ngModel)]="status" name="status">
+          <option [selected]="true" [value]="1" selected="selected">All</option>
+          <option [value]="2">True</option>
+          <option [value]="3">False</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success mt-2">Search</button>
+  </form>
+  <table class="table mt-4">
+    <thead class="table-dark">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col">Created By</th>
+      <th scope="col">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let login of logins | paginate : {
+        itemsPerPage: pageSize,
+        currentPage: page,
+        totalItems: count};">
+      <tr [class.table-danger]="!login.status" [class.table-success]="login.status">
+        <td>
+          <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+              Action
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">View</a></li>
+              <li><a class="dropdown-item" href="#">Edit</a></li>
+              <li>
+                <div *ngIf="login.status">
+                  <a class="dropdown-item" (click)="checkBlockStatus(login.userName)">Block</a>
+                </div>
+                <div *ngIf="!login.status">
+                  <a class="dropdown-item" (click)="checkBlockStatus(login.userName)">Activate</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td>{{login.userName}}</td>
+        <td>{{login.email}}</td>
+        <td>{{login.createdBy}}</td>
+        <td>{{login.status}}</td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="col-md-12">
+    <pagination-controls
+      previousLabel="Prev"
+      nextLabel="Next"
+      [responsive]="true"
+      (pageChange)="handlePageChange($event)"
+    ></pagination-controls>
+  </div>
+</div>
